@@ -443,10 +443,10 @@ var SSDBConnect = function(host, port, timeout, listener){
 
 /**
  * new a connection to ssdb server
- * @param  {[type]} host     [host]
- * @param  {[type]} port     [port]
- * @param  {[type]} timeout  [microseconds, if ommitted, it will be treated as listener]
- * @param  {[type]} listener [callback after connection,]
+ * @param  {string} host     [host]
+ * @param  {int} port     [port]
+ * @param  {int} timeout  [microseconds, if ommitted, it will be treated as listener]
+ * @param  {function} listener [callback after connection,]
  * @return {object}          [SSDBConnect]
  */
 exports.connect = function(host, port, timeout, listener){
