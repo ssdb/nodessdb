@@ -200,6 +200,26 @@ exports.connect = function(host, port, timeout, listener){
 	}
 
 	// callback(err);
+    self.setx = function(key, val, ttl, callback){
+        self.request('setx', [key, val, ttl], function(resp){
+            if(callback){
+                var err = resp[0] == 'ok'? 0 : resp[0];
+                callback(err, resp[1].toString());
+            }
+        });
+    }
+
+    // callback(err);
+    self.ttl = function(key, callback){
+        self.request('ttl', [key], function(resp){
+            if(callback){
+                var err = resp[0] == 'ok'? 0 : resp[0];
+                callback(err,resp[1].toString());
+            }
+        });
+    }
+
+	// callback(err);
 	self.del = function(key, callback){
 		self.request('del', [key], function(resp){
 			if(callback){
