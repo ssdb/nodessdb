@@ -1,0 +1,23 @@
+{
+  "name": "nodessdb",
+  "version": "1.0.0",
+  "description": "SSDB nodejs Client",
+  "main": "SSDB.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mindnuts/nodessdb.git"
+  },
+  "keywords": [
+    "foo",
+    "bar"
+  ],
+  "author": "acsandeep",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mindnuts/nodessdb/issues"
+  },
+  "homepage": "https://github.com/mindnuts/nodessdb#readme"
+}
