@@ -8,16 +8,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mindnuts/nodessdb.git"
+    "url": "git+https://github.com/ssdb/nodessdb.git"
   },
   "keywords": [
     "foo",
     "bar"
   ],
-  "author": "acsandeep",
-  "license": "ISC",
+  "author": "ideawu",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mindnuts/nodessdb/issues"
+    "url": "https://github.com/ssdb/nodessdb/issues"
   },
-  "homepage": "https://github.com/mindnuts/nodessdb#readme"
+  "homepage": "https://github.com/ssdb/nodessdb#readme"
 }
