@@ -1,0 +1,23 @@
+{
+  "name": "nodessdb",
+  "version": "1.0.0",
+  "description": "SSDB nodejs Client",
+  "main": "SSDB.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ssdb/nodessdb.git"
+  },
+  "keywords": [
+    "foo",
+    "bar"
+  ],
+  "author": "ideawu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ssdb/nodessdb/issues"
+  },
+  "homepage": "https://github.com/ssdb/nodessdb#readme"
+}
