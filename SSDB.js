@@ -386,6 +386,27 @@ exports.connect = function(host, port, timeout, listener){
 		});
 	}
 
+    self.hgetall = function (name, callback) {
+        self.request('hgetall', [name], function (resp) {
+            if (callback) {
+                var err = resp[0] == 'ok' ? 0 : resp[0];
+                if (!err) {
+                    var newArr = {}
+                    var i = 1 
+                    len = resp.length
+
+                    while (i < len) {
+                        newArr[resp[i]] = resp[i+1].toString()
+                        i += 2
+                    }
+                    callback(err, newArr);
+                } else {
+                    callback('error');
+                }
+            }   
+        })  
+    }  
+
 	// callback(err);
 	self.hset = function(name, key, val, callback){
 		self.request('hset', [name, key, val], function(resp){
