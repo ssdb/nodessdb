@@ -21,6 +21,7 @@ exports.connect = function(host, port, timeout, listener){
 		listener = timeout;
 		timeout = 0;
 	}
+	timeout = timeout || 0;
 	listener = listener || function(){};
 
 	var sock = new net.Socket();
