@@ -13,7 +13,7 @@ var net = require('net');
 // callback(err, ssdb)
 exports.connect = function(host, port, timeout, listener){
 	var self = this;
-	var recv_buf = new Buffer(0);
+	var recv_buf = Buffer.alloc(0);
 	var callbacks = [];
 	var connected = false;
 
@@ -59,12 +59,12 @@ exports.connect = function(host, port, timeout, listener){
 			if(arg instanceof Buffer){
 				//
 			}else{
-				arg = new Buffer(arg.toString());
+				arg = Buffer.from(arg.toString());
 			}
 			bs.push(arg);
 			size += arg.length;
 		}
-		var ret = new Buffer(size);
+		var ret = Buffer.alloc(size);
 		var offset = 0;
 		for(var i=0; i<bs.length; i++){
 			bs[i].copy(ret, offset);
