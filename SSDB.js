@@ -46,9 +46,9 @@ exports.connect = function(host, port, timeout, listener){
 	}
 
 	self.request = function(cmd, params, callback){
+		callbacks.push(callback || function(){});
 		var arr = [cmd].concat(params);
 		self.send_request(arr);
-		callbacks.push(callback || function(){});
 	}
 
 	function build_buffer(arr){
