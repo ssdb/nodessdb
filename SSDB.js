@@ -11,7 +11,7 @@ var net = require('net');
 
 // timeout: microseconds, if ommitted, it will be treated as listener
 // callback(err, ssdb)
-exports.connect = function(host, port, timeout, listener){
+var SSDBConnect = function(host, port, timeout, listener){
 	var self = this;
 	var recv_buf = new Buffer(0);
 	var callbacks = [];
@@ -462,6 +462,17 @@ exports.connect = function(host, port, timeout, listener){
 	return self;
 }
 
+/**
+ * new a connection to ssdb server
+ * @param  {string} host     [host]
+ * @param  {int} port     [port]
+ * @param  {int} timeout  [microseconds, if ommitted, it will be treated as listener]
+ * @param  {function} listener [callback after connection,]
+ * @return {object}          [SSDBConnect]
+ */
+exports.connect = function(host, port, timeout, listener){
+	return new SSDBConnect(host, port, timeout, listener);
+}
 
 /*
 example:
