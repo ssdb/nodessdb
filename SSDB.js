@@ -10,23 +10,23 @@
 var net = require('net');
 
 // timeout: microseconds, if ommitted, it will be treated as listener
+// option = unix path or {host, port, timeout}
 // callback(err, ssdb)
-exports.connect = function(host, port, timeout, listener){
+exports.connect = function(opts, listener){
 	var self = this;
 	var recv_buf = Buffer.alloc(0);
 	var callbacks = [];
 	var connected = false;
-
-	if(typeof(timeout) == 'function'){
-		listener = timeout;
-		timeout = 0;
+	
+	//timeout = timeout || 0;
+	//listener = listener || function(){};
+	
+	if (!opts){
+		opts = {port:8888, host:'localhost'};
 	}
-	timeout = timeout || 0;
-	listener = listener || function(){};
 
 	var sock = new net.Socket();
 	sock.on('error', function(e){		
-		console.log('333');
 		if(!connected){
 			listener('connect_failed', e);
 		}else{
@@ -48,7 +48,7 @@ exports.connect = function(host, port, timeout, listener){
 		}
 	});
 
-	sock.connect({port:8888, host:'localhost'}, function(){
+	sock.connect(opts, function(){
 		//console.log('Socket connected!');		
 		connected = true;
 		sock.setNoDelay(true);
@@ -106,9 +106,7 @@ exports.connect = function(host, port, timeout, listener){
 		}
 		bs.push('\n');
 		
-		var req = build_buffer(bs);
-		
-		sock.write(req);
+		sock.write( build_buffer(bs) );
 		//console.log('write ' + req.length + ' bytes');
 		//console.log('write: ' + req);
 	}

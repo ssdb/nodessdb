@@ -1,6 +1,6 @@
 {
   "name": "nodessdb",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "SSDB nodejs Client",
   "main": "SSDB.js",
   "scripts": {
