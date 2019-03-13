@@ -185,28 +185,34 @@ exports.connect = function(host, port, timeout, listener){
 
 	// callback(err, val);
 	// err: 0 on sucess, or error_code(string) on error
+	
+	////////////////// Key Value
+	
+	//get key Get the value related to the specified key
 	self.get = function(key, callback){
 		self.request('get', [key], function(resp){
 			if(callback){
-				var err = resp[0] == 'ok'? 0 : resp[0];
-				var val = resp[1];
-				callback(err, val);
+				let err = resp[0] == 'ok'? 0 : resp[0];
+				callback(err, resp[1].toString());
 			}
 		});
 	}
 
-	// callback(err);
+	//set key value Set the value of the key.
 	self.set = function(key, val, callback){
 		self.request('set', [key, val], function(resp){
 			if(callback){
-				var err = resp[0] == 'ok'? 0 : resp[0];
+				let err = resp[0] == 'ok'? 0 : resp[0];
 				callback(err);
 			}
 		});
 	}
 
-	// callback(err);
+	//setx key value ttl Set the value of the key, with a time to live. 
     self.setx = function(key, val, ttl, callback){
+		if (!ttl) ttl = 0;
+			ttl = parseInt(ttl);		
+		
         self.request('setx', [key, val, ttl], function(resp){
             if(callback){
                 var err = resp[0] == 'ok'? 0 : resp[0];
@@ -214,18 +220,51 @@ exports.connect = function(host, port, timeout, listener){
             }
         });
     }
-
-    // callback(err);
+	
+	//setnx key value Set the string value in argument as value of the key only if the key doesn"t exist.
+	self.setnx = function(key, val, callback){
+        self.request('setnx', [key, val], function(resp){
+            if(callback){
+                var err = resp[0] == 'ok'? 0 : resp[0];
+                callback(err, parseInt(resp[1].toString()));
+            }
+        });
+    }
+	
+	//expire key ttl Set the time left to live in seconds, only for keys of KV type.
+	self.expire = function(key, ttl, callback){
+		if (!ttl) ttl = 0;
+			ttl = parseInt(ttl);		
+		
+        self.request('expire', [key, ttl], function(resp){
+            if(callback){
+                var err = resp[0] == 'ok'? 0 : resp[0];
+                callback(err, parseInt(resp[1].toString()));
+            }
+        });
+    }
+	
+	//ttl key Returns the time left to live in seconds, only for keys of KV type.
     self.ttl = function(key, callback){
         self.request('ttl', [key], function(resp){
             if(callback){
                 var err = resp[0] == 'ok'? 0 : resp[0];
-                callback(err,resp[1].toString());
+                callback(err, resp[1].toString());
             }
         });
     }
-
-	// callback(err);
+	
+	//getset key value Sets a value and returns the previous entry at that key.
+	self.getset = function(key, val, callback){
+        self.request('getset', [key, val], function(resp){
+            if(callback){
+                var err = resp[0] == 'ok'? 0 : resp[0];
+                callback(err, resp[1].toString());
+            }
+        });
+    }
+	
+	//del key Delete specified key.
 	self.del = function(key, callback){
 		self.request('del', [key], function(resp){
 			if(callback){
@@ -234,21 +273,91 @@ exports.connect = function(host, port, timeout, listener){
 			}
 		});
 	}
-
-	// callback(err, {index:[], items:{key:score}})
-	self.scan = function(key_start, key_end, limit, callback){
-		self.request('scan', [key_start, key_end, limit], function(resp){
+	
+	//incr key [num] Increment the number stored at key by num.
+	self.incr = function(key, num, callback){
+        if (!num) num = 1;
+		num = parseInt( num );		
+		
+		self.request('incr', [key, num], function(resp){
+            if(callback){
+                var err = resp[0] == 'ok'? 0 : resp[0];
+                callback(err, parseInt( resp[1].toString() ));
+            }
+        });
+    }
+	
+	//exists key Verify if the specified key exists.
+	self.exists = function(key, callback){
+		self.request('exists', [key], function(resp){
+			if(callback){
+				var err = resp[0] == 'ok'? 0 : resp[0];
+				callback(err, parseInt( resp[1].toString() ));
+			}
+		});
+	}
+	
+	//bit operations @todo 
+	
+	
+	//substr key start size Return part of a string.
+	self.substr = function(key, start, size, callback){
+        if (!start) start = 0;
+		if (!size) size = 1;	
+		
+		self.request('substr', [key, start, size], function(resp){
+            if(callback){
+                var err = resp[0] == 'ok'? 0 : resp[0];
+                callback(err, resp[1].toString());
+            }
+        });
+    }
+	
+	//strlen key Return the number of bytes of a string.
+	self.strlen = function(key, callback){
+		self.request('strlen', [key], function(resp){
+            if(callback){
+                var err = resp[0] == 'ok'? 0 : resp[0];
+                callback(err, parseInt( resp[1].toString() ));
+            }
+        });
+    }
+	
+	//rkeys key_start key_end limit List keys in range (key_start, key_end], in reverse order.
+	self.rkeys = function(key_start, key_end, limit, callback){
+		if (typeof(limit) == 'function'){
+			callback = limit;
+			limit = 9223372036854775807;
+		}
+		
+		self.request('rkeys', [key_start, key_end, limit], function(resp){
+			if(callback){
+				var err = resp[0] == 'ok'? 0 : resp[0];
+				var data = [];
+				for(var i=1; i<resp.length; i++){
+					data.push( resp[i].toString() );
+				}
+				callback(err, data);
+			}
+		});
+	}
+	
+	//rscan key_start key_end limit List key-value pairs with keys in range (key_start, key_end], in reverse order.
+	self.rscan = function(key_start, key_end, limit, callback){
+		if (typeof(limit) == 'function'){
+			callback = limit;
+			limit = 9223372036854775807;
+		}
+		
+		self.request('rscan', [key_start, key_end, limit], function(resp){
 			if(callback){
 				var err = resp[0] == 'ok'? 0 : resp[0];
 				if(resp.length % 2 != 1){
 					callback('error');
 				}else{
-					var data = {index: [], items: {}};
+					var data = {};
 					for(var i=1; i<resp.length; i+=2){
-						var k = resp[i].toString();
-						var v = resp[i+1].toString();
-						data.index.push(k);
-						data.items[k] = v;
+						data[ resp[i].toString() ] = resp[i+1].toString();
 					}
 					callback(err, data);
 				}
@@ -256,15 +365,81 @@ exports.connect = function(host, port, timeout, listener){
 		});
 	}
 
-	// callback(err, [])
+	//multi_set key1 value1 key2 value2 ... Set multiple key-value pairs(kvs) in one method call.
+	self.multi_set = function(kv, callback){
+		let nkv = [];
+		if (kv){		
+			Object.keys(kv).forEach(function(k){
+				if (kv[k]){
+					nkv.push( k );
+					nkv.push( kv[k] );
+				}
+			});
+		}
+				
+		self.request('multi_set', nkv, function(resp){
+			if(callback){
+				let err = resp[0] == 'ok'? 0 : resp[0];
+				callback(err, resp[1].toString());
+			}
+		});
+	}
+
+	//multi_get key1 key2 ... Get the values related to the specified multiple keys
+	self.multi_get = function(k, callback){
+		self.request('multi_get', k, function(resp){
+			if(callback){
+				let err = resp[0] == 'ok'? 0 : resp[0];
+				var data = {};
+				for(var i=1; i<resp.length; i+=2){
+					data[ resp[i].toString() ] = resp[i+1].toString();
+				}
+				callback(err, data);
+			}
+		});
+	}
+
+	//multi_del key1 key2 ... Delete specified multiple keys.
+	self.multi_del = function(k, callback){
+		self.request('multi_del', k, function(resp){
+			if(callback){
+				let err = resp[0] == 'ok'? 0 : resp[0];
+				callback(err, resp[1].toString());
+			}
+		});
+	}
+
+	//scan key_start key_end limit List key-value pairs with keys in range (key_start, key_end].
+	self.scan = function(key_start, key_end, limit, callback){
+		if (typeof(limit) == 'function'){
+			callback = limit;
+			limit = 9223372036854775807;
+		}
+		
+		self.request('scan', [key_start, key_end, limit], function(resp){
+			if(callback){
+				var err = resp[0] == 'ok'? 0 : resp[0];
+				if(resp.length % 2 != 1){
+					callback('error');
+				}else{
+					var data = {};
+					for(var i=1; i<resp.length; i+=2){
+						data[ resp[i].toString() ] = resp[i+1].toString();
+					}
+					callback(err, data);
+				}
+			}
+		});
+	}
+
+	//keys key_start key_end limit List keys in range (key_start, key_end].
 	self.keys = function(key_start, key_end, limit, callback){
 		self.request('keys', [key_start, key_end, limit], function(resp){
 			if(callback){
 				var err = resp[0] == 'ok'? 0 : resp[0];
 				var data = [];
 				for(var i=1; i<resp.length; i++){
-					var k = resp[i].toString();
-					data.push(k);
+					data.push( resp[i].toString() );
 				}
 				callback(err, data);
 			}
@@ -333,12 +508,9 @@ exports.connect = function(host, port, timeout, listener){
 				if(resp.length % 2 != 1){
 					callback('error');
 				}else{
-					var data = {index: [], items: {}};
+					var data = {};
 					for(var i=1; i<resp.length; i+=2){
-						var k = resp[i].toString();
-						var v = parseInt(resp[i+1]);
-						data.index.push(k);
-						data.items[k] = v;
+						data[ resp[i].toString() ] = parseInt(resp[i+1]);
 					}
 					callback(err, data);
 				}
@@ -420,12 +592,9 @@ exports.connect = function(host, port, timeout, listener){
 				if(resp.length % 2 != 1){
 					callback('error');
 				}else{
-					var data = {index: [], items: {}};
+					var data{};
 					for(var i=1; i<resp.length; i+=2){
-						var k = resp[i].toString();
-						var v = resp[i+1].toString();
-						data.index.push(k);
-						data.items[k] = v;
+						data[ resp[i].toString() ] = resp[i+1].toString();
 					}
 					callback(err, data);
 				}
@@ -640,8 +809,44 @@ exports.connect = function(host, port, timeout, listener){
 	
 	
 	////////////////// Server command
-	//
 	
+	//auth password Authenticate the connection.
+	self.auth = function(passw, callback){
+		self.request('auth', [passw], function(resp){
+			if(callback){
+				let err = resp[0] == 'ok'? 0 : resp[0];
+								
+				callback(err);
+			}
+		});
+	}
+	
+	//dbsize Return the approximate size of the database. In bytes
+	self.dbsize = function(callback){	
+		self.request('dbsize', [name, key, num], function(resp){
+			if(callback){
+				let err = resp[0] == 'ok'? 0 : resp[0];
+		
+				callback(err, parseInt( resp[1].toString() ));
+			}
+		});
+	}
+	
+	//flushdb [type] Delete all data in ssdb server.
+	self.flushdb = function(type, callback){	
+		if (!type)	type = '';
+		if (['', 'kv', 'hash', 'zset', 'list'].indexOf(type) == -1) type = '';
+		
+		self.request('flushdb', [type], function(resp){
+			if(callback){
+				let err = resp[0] == 'ok'? 0 : resp[0];
+		
+				callback(err);
+			}
+		});
+	}
+	
+	//info [opt] Return the information of server.
 	self.info = function(opt, callback){
 		if (!opt) opt = '';
 		self.request('info', [opt], function(resp){
@@ -658,6 +863,37 @@ exports.connect = function(host, port, timeout, listener){
 			}
 		});
 	}
+	
+	//slaveof id host port [auth last_seq last_key] Start a replication slave.
+	self.slaveof = function(id, host, port, auth, last_seq, last_key, callback){	
+		if (!last_seq)	last_seq = '';
+		if (!last_key)	last_key = '';
+		if (!auth)	auth = '';
+		if (!port)	port = 8888;
+				
+		self.request('slaveof', [id, host, port, auth, last_seq, last_key], function(resp){
+			if(callback){
+				let err = resp[0] == 'ok'? 0 : resp[0];
+		
+				callback(err);
+			}
+		});
+	}
+
+
+	////////////////// IP Filter  @todo
+	
+	
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
 
 	return self;
 }
