@@ -458,6 +458,15 @@ exports.connect = function(host, port, timeout, listener){
 			}
 		});
 	}
+	
+	self.hclear = function(key, callback){
+		self.request('hclear', [key], function(resp){
+			if(callback){
+				var err = resp[0] == 'ok'? 0 : resp[0];
+				callback(err);
+			}
+		});
+	}
 
 	return self;
 }
