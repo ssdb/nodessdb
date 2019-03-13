@@ -796,7 +796,7 @@ exports.connect = function(host, port, timeout, listener){
 	}
 	
 	//zrrange name offset limit Returns a range of key-score pairs by index range [offset, offset + limit), in reverse order.
-	self.zrrange = function(name, offset limit, callback){
+	self.zrrange = function(name, offset, limit, callback){
 		if (typeof(limit) == 'function'){
 			callback = limit;
 			limit = 9223372036854775807;
