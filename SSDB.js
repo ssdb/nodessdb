@@ -1301,15 +1301,6 @@ exports.connect = function(host, port, timeout, listener){
 		});
 	}
 
-
-
-
-
-
-
-
-	
-	
 	
 	////////////////// Server command
 	
@@ -1386,15 +1377,7 @@ exports.connect = function(host, port, timeout, listener){
 
 	////////////////// IP Filter  @todo
 	
-	
-	
-	
-	
 
-	
-	
-	
-	
 	
 	
 
