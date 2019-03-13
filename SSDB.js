@@ -857,7 +857,7 @@ exports.connect = function(host, port, timeout, listener){
 				if(resp.length % 2 != 1){
 					callback('error');
 				}else{
-					var data{};
+					var data = {};
 					for(var i=1; i<resp.length; i+=2){
 						data[ resp[i].toString() ] = resp[i+1].toString();
 					}
