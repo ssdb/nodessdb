@@ -34,6 +34,8 @@ exports.connect = function(host, port, timeout, listener){
 		}
 	});
 	sock.connect(port, host, function(){
+		console.log('Socket connected!');
+		
 		connected = true;
 		sock.setNoDelay(true);
 		sock.setKeepAlive(true);
