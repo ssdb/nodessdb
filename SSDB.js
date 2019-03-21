@@ -1075,7 +1075,10 @@ exports.connect = function(opts, listener){
 	
 	//qpush_front name item1 item2 ... Adds one or more than one element to the head of the queue.
 	self.qpush_front = function(name, v, callback){
-		v.unshift( name );
+		if (typeof(v) == 'array')
+			v.unshift( name );
+		else
+			v = [name, v];
 						
 		self.request('qpush_front', v, function(resp){
 			if(callback){
