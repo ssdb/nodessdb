@@ -184,6 +184,17 @@ exports.connect = function(opts, listener){
 	// callback(err, val);
 	// err: 0 on sucess, or error_code(string) on error
 	
+	
+	self.compact = function(callback){
+		self.request('compact', function(resp){
+			if(callback){
+				let err = resp[0] == 'ok'? 0 : resp[0];
+				callback(err, resp[1].toString());
+			}
+		});
+	}
+	
+	
 	////////////////// Key Value
 	
 	//get key Get the value related to the specified key
@@ -1075,6 +1086,8 @@ exports.connect = function(opts, listener){
 	
 	//qpush_front name item1 item2 ... Adds one or more than one element to the head of the queue.
 	self.qpush_front = function(name, v, callback){
+		console.log( typeof(v) );
+		
 		if (typeof(v) == 'array')
 			v.unshift( name );
 		else
@@ -1095,7 +1108,10 @@ exports.connect = function(opts, listener){
 	
 	//qpush_back name item1 item2 ... Adds an or more than one element to the end of the queue.
 	self.qpush_back = function(name, v, callback){
-		v.unshift( name );
+		if (typeof(v) == 'array')
+			v.unshift( name );
+		else
+			v = [name, v];
 						
 		self.request('qpush_back', v, function(resp){
 			if(callback){
